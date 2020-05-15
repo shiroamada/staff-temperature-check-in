@@ -20,6 +20,9 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
         \App\Http\Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
+
+        // appending custom middleware, there is no need in Laravel Forge, but runcloud yes
+        \App\Http\Middleware\HttpsProtocol::class,
     ];
 
     /**
