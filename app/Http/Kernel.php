@@ -22,7 +22,8 @@ class Kernel extends HttpKernel
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
 
         // appending custom middleware, there is no need in Laravel Forge, but runcloud yes
-        \App\Http\Middleware\HttpsProtocol::class,
+        // if using cloudflare proxy need to disable it.
+        //\App\Http\Middleware\HttpsProtocol::class,
     ];
 
     /**

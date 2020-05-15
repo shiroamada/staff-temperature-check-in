@@ -7,6 +7,7 @@ use App\Exports\MoviesExport;
 use App\Logs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Excel;
 
 class ReportController extends Controller
@@ -37,7 +38,7 @@ class ReportController extends Controller
             return redirect()->back()->withInput()->withErrors($validator);
         }
 
-        return \Maatwebsite\Excel\Facades\Excel::download(new LogsExport($data), date('Y-m-d').'-invoices-_Profile.xls', \Maatwebsite\Excel\Excel::XLS);
+        return \Maatwebsite\Excel\Facades\Excel::download(new LogsExport($data), date('Y-m-d').'-'.Str::slug(env('APP_COMPANY_NAME','MY COMPANY'), '_').'.xls', \Maatwebsite\Excel\Excel::XLS);
 
     }
 }

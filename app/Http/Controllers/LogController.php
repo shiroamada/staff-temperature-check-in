@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Logs;
+use App\Notifications\StaffFever;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\View;
 use Yajra\DataTables\Facades\DataTables;
@@ -57,11 +59,10 @@ class LogController extends Controller
 
     function ajax()
     {
-
         $log = Logs::query();
         $log = $log->select(['logs.staff_name','logs.staff_id', 'logs.staff_temp',
             'logs.created_at','logs.id']);
-        //sort by dealer
+
         $datatables = Datatables::of($log);
 
         $datatables
@@ -74,7 +75,7 @@ class LogController extends Controller
                 return $action_string;
             })
             ->rawColumns(['name','action']);
-            //->make(true);
+
 
         return $datatables->make(true);
     }
@@ -97,7 +98,9 @@ class LogController extends Controller
     public function store(Request $request)
     {
         $this->validate($request, [
-            'staff_temp' => 'required|max:191',
+            'staff_temp' => 'required|max:191|regex:/^[3-4][0-9](?:\.[0-9]{1,2})*$/',
+        ], [
+            'staff_temp.regex' => 'Please enter correct Body Temperature (°C)!'
         ]);
 
         $log = New Logs;
@@ -105,6 +108,14 @@ class LogController extends Controller
         $log->staff_id = Cookie::get('staff_id');
         $log->staff_temp = request()->get('staff_temp');
         $log->save();
+
+        //check fever
+        if(request()->get('staff_temp') >= env('TRIGGER_TEMP', '37.5'))
+        {
+            Notification::route('mail', env('WARNING_EMAIL', 'warning@example.com'))
+                ->notify(new StaffFever($log));
+            return redirect()->route('log.create')->with('error', 'Record Created, You are SICK and Stop Enter the Premise and go and see Doctor NOW!');
+        }
 
         return redirect()->route('log.create')->with('success', 'Record Created, See you tomorrow :D!');
     }
