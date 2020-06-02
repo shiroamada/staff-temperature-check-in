@@ -28,7 +28,7 @@
                     <div class="form-group">
                         <label for="id" class="col-sm-2 control-label">Staff ID</label>
                         <div class="col-sm-10">
-                            {{Form::text('id', NULL, ['class' => 'form-control', 'id' => 'id', 'required' => '', 'placeholder' => 'Your Working ID ('.env('STAFF_ID_FORMAT','MYXXX').')'])}}
+                            {{Form::text('id', NULL, ['class' => 'form-control', 'id' => 'id', 'required' => '', 'placeholder' => 'Your Working ID / Contact No ('.env('STAFF_ID_FORMAT','MYXXX').')'])}}
                         </div>
                     </div>
 
